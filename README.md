@@ -4,9 +4,8 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Built on CROO CAP](https://img.shields.io/badge/Built%20on-CROO%20CAP-blue.svg)](https://croo.network)
-[![Powered by Claude AI](https://img.shields.io/badge/Powered%20by-Claude--Sonnet--4.5-blueviolet.svg)](https://anthropic.com)
+[![Powered by Claude AI](https://img.shields.io/badge/Powered%20by-Claude-blueviolet.svg)](https://anthropic.com)
 [![Network: Base](https://img.shields.io/badge/Network-Base-blue.svg)](https://base.org)
-[![Price: 0.05 USDC](https://img.shields.io/badge/Price-0.05%20USDC-gold.svg)](#)
 
 ---
 
@@ -202,7 +201,7 @@ AlphaProbe is a **Provider Agent** operating under the Compute Agent Protocol (C
 | **Payment Token** | USDC on Base (`0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913`) |
 | **Deliverable Type** | Text (JSON formatted) + Cryptographic Proof Hash |
 | **Input Types** | Token address, wallet address, or project name |
-| **AI Model** | Claude Sonnet 4.5 with Web Search |
+| **AI Model** | Claude with Web Search |
 
 ---
 
