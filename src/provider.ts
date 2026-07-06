@@ -52,7 +52,16 @@ export async function startProvider(): Promise<void> {
       // Retrieve the negotiation to read the requester's input
       const order = await client.getOrder(orderId);
       const negotiation = await client.getNegotiation(order.negotiationId);
-      const input = (negotiation.requirements || "").trim();
+      let raw = (negotiation.requirements || "").trim();
+      let input = raw;
+      try {
+        const parsed = JSON.parse(raw);
+        if (parsed.text) input = parsed.text.trim();
+        else if (parsed.input) input = parsed.input.trim();
+        else if (typeof parsed === "string") input = parsed.trim();
+      } catch {
+        // input is already a plain string, keep it
+      }
 
       if (!input) {
         throw new Error("No input provided — expected a token address, wallet address, or project name");

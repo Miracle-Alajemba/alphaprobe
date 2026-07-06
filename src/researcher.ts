@@ -78,7 +78,9 @@ Guidelines:
 - Be objective — present both bullish and bearish arguments
 - If data is unavailable or the subject is unverifiable, use verdict "Unverified"
 - Always include at least one risk factor
-- Set generatedAt to the current UTC timestamp`;
+- Set generatedAt to the current UTC timestamp
+
+IMPORTANT: You MUST return ONLY a raw JSON object as your final response. Do NOT write any introduction, explanation, or commentary before or after the JSON. Do NOT use markdown code fences. Your response must start with { and end with } and nothing else.`;
 
 function buildUserPrompt(subject: string, onchainData: any): string {
   const dataSection = onchainData
