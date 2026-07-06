@@ -83,11 +83,31 @@ Guidelines:
 IMPORTANT: You MUST return ONLY a raw JSON object as your final response. Do NOT write any introduction, explanation, or commentary before or after the JSON. Do NOT use markdown code fences. Your response must start with { and end with } and nothing else.`;
 
 function buildUserPrompt(subject: string, onchainData: any): string {
-  const dataSection = onchainData
-    ? `\n\n--- ON-CHAIN DATA ---\n${JSON.stringify(onchainData, null, 2)}\n--- END ON-CHAIN DATA ---`
-    : "\n\nNo on-chain data available — rely on web search.";
+  const dataSection = onchainData && Object.keys(onchainData).length > 0
+    ? `\n\nON-CHAIN DATA:\n${JSON.stringify(onchainData, null, 2)}`
+    : "\n\nNo on-chain data available.";
 
-  return `Research the following crypto subject thoroughly using web search and return the JSON report.\n\nSubject: ${subject}${dataSection}`;
+  return `Research this crypto subject: ${subject}${dataSection}
+
+YOU MUST RESPOND WITH ONLY A RAW JSON OBJECT.
+DO NOT write anything before the opening {
+DO NOT write anything after the closing }
+DO NOT use markdown code fences
+DO NOT say "I'll conduct" or any other introduction
+START your response with { and END with }
+
+Return the JSON matching this exact schema:
+{
+  "subject": "${subject}",
+  "verdict": "Bullish or Bearish or Neutral or Unverified",
+  "summary": "...",
+  "tokenMetrics": { "price": "...", "marketCap": "...", "volume24h": "...", "priceChange24h": "..." },
+  "onchainActivity": { "recentTransactions": 0, "holderCount": "...", "activityLevel": "High or Medium or Low or Unknown" },
+  "recentNews": [{ "title": "...", "summary": "...", "source": "..." }],
+  "riskFactors": [{ "factor": "...", "severity": "High or Medium or Low" }],
+  "sources": ["..."],
+  "generatedAt": "${new Date().toISOString()}"
+}`;
 }
 
 // ── Researcher ───────────────────────────────────────────────────────────────
@@ -130,12 +150,13 @@ export async function researchSubject(
 
     const raw = textBlocks.join("").trim();
 
-    // Strip markdown code fences if present
-    const cleaned = raw
-      .replace(/^```json\s*/i, "")
-      .replace(/^```\s*/i, "")
-      .replace(/```\s*$/i, "")
-      .trim();
+    // Extract JSON substring to throw away conversational thoughts
+    const startIdx = raw.indexOf("{");
+    const endIdx = raw.lastIndexOf("}");
+    if (startIdx === -1 || endIdx === -1 || endIdx < startIdx) {
+      throw new Error(`Could not find a valid JSON block. Raw response: ${raw}`);
+    }
+    const cleaned = raw.substring(startIdx, endIdx + 1);
 
     // Parse and return the structured report
     const report: ResearchReport = JSON.parse(cleaned);
